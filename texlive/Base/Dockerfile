@@ -40,6 +40,13 @@ ENV REBUILT_AFTER="2024-14-02"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     fontconfig inkscape pandoc python3-pygments wget python3 \
     gnupg gnuplot perl-modules perl ca-certificates git ghostscript \
+    freeglut3-dev libgdal-dev libfftw3-double3 libfftw3-long3 libfftw3-single3 \
+    chktex culmus culmus-fancy default-jdk-headless dot2tex graphviz gsfonts \
+    imagemagick libcurl4 libexpat1 libfontconfig libfreetype6 libgsl27 libidn12 \
+    libijs-0.35 libjbig2dec0 libjpeg8 liblcms2-2 libmagick++-6.q16-8 libncurses6 \
+    libopenjp2-7 libosmesa6 libpaper1 libpng16-16 libtiff5 libudunits2-0 libxml2 \
+    python-is-python3 python3-numpy python3-pygments python3-scipy python3-simpy \
+    strace t1-cyrillic time zlib1g \
     qpdf r-base-core tar make \
     && rm -rf /var/lib/apt/lists/*
 
@@ -51,12 +58,7 @@ COPY ./extrafonts /usr/share/fonts/
 # Install fonts
 # --------------------
 RUN echo "ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true" | debconf-set-selections \
-&& apt-get update && apt-get install -y ttf-mscorefonts-installer \
+&& apt-get update && apt-get install -y ttf-mscorefonts-installer ttf-bitstream-vera \
 && apt update && apt search ^fonts | grep -o '^fonts[^/]*' | xargs apt install -y \
-&& wget --quiet https://github.com/google/fonts/archive/main.tar.gz -O gf.tar.gz \
 && rm -rf /var/lib/apt/lists/* \
-&& tar -xf gf.tar.gz \
-&& mkdir -p /usr/share/fonts/truetype/google-fonts \
-&& find $PWD/fonts-main/ -name "*.ttf" -exec install -m644 {} /usr/share/fonts/truetype/google-fonts/ \; || return 1 \
-&& rm -f gf.tar.gz \
-&& fc-cache -f && rm -rf /var/cache/*
+&& fc-cache -f 
